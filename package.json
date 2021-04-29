@@ -1,0 +1,25 @@
+{
+  "name": "Fractals",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paullewis2013/Fractals.git"
+  },
+  "keywords": [],
+  "author": "Paul Lewis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paullewis2013/Fractals/issues"
+  },
+  "homepage": "https://github.com/paullewis2013/Fractals#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "sass": "^1.32.12"
+  }
+}
