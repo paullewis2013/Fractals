@@ -6,7 +6,7 @@ canvas.style.height = window.innerHeight + "px";
 var ctx = canvas.getContext('2d')
 
 // Set actual size in memory (scaled to account for extra pixel density).
-var scale = 0.8//window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+var scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
 canvas.width = Math.floor(window.innerHeight/2 * 1.5 * scale);
 canvas.height = Math.floor(window.innerHeight/2 * scale);
 
@@ -41,21 +41,21 @@ var state = []
 var finishedPlot = false
 
 function calc() {
-    for (let i = 0; i < WIDTH; i++) {
+    for (let i = 0; i < HEIGHT; i++) {
 
         //add new row to pixel array
         state.push([])
 
-        for (let j = 0; j < HEIGHT; j++) {
+        for (let j = 0; j < WIDTH; j++) {
             complex = {
-                x: REAL_SET.start + (i / WIDTH) * (REAL_SET.end - REAL_SET.start),
-                y: IMAGINARY_SET.start + (j / HEIGHT) * (IMAGINARY_SET.end - IMAGINARY_SET.start)
+                x: REAL_SET.start + (j / WIDTH) * (REAL_SET.end - REAL_SET.start),
+                y: IMAGINARY_SET.start + (i / HEIGHT) * (IMAGINARY_SET.end - IMAGINARY_SET.start)
             }
 
             const [m, isMandelbrotSet] = mandelbrot(complex)
             let cIndex = isMandelbrotSet ? 0 : (m % colors.length - 1) + 1
             ctx.fillStyle = colors[cIndex]
-            ctx.fillRect(i, j, 1, 1)
+            ctx.fillRect(j, i, 1, 1)
 
             //TODO store state of plot here
             let temp = isMandelbrotSet ? -1 : cIndex
@@ -64,9 +64,10 @@ function calc() {
     }
 
     finishedPlot = true
+    console.log(state)
 }
 
-const MAX_ITERATION = 80
+const MAX_ITERATION = 600
 function mandelbrot(c) {
     let z = { x: 0, y: 0 }, n = 0, p, d;
     do {
@@ -84,39 +85,86 @@ function mandelbrot(c) {
     return [n, d <= 2]
 }
 
+var reducedState = []
 
+//loop through state and coalesce adjacent pixels with same value
+function coalesce(){
 
-//do main calculation
-calc()
-setInterval(draw2, 100)
+    for(let i = 0; i < state.length; i++){
+        
+        //add new row
+        reducedState.push([]);
 
-// var draw = function(){
+        var last = state[i][0];
+        var len = 0;
 
-//     console.log("waiting")
+        for(let j = 0; j < state[i].length; j++){
+            
+            //check if new pixel has unique value
+            if(state[i][j] == last){
+                len++;
+            }else{
 
-//     if(finishedPlot) {
-//         draw = draw2;
-//     }
-// }
+                reducedState[i].push({last, len})
 
-function draw2(){
+                len = 1;
+                last = state[i][j]
+            }
+        }
+        //push end of row
+        reducedState[i].push({last, len})
+        console.log("pushing end")
+    }
+    console.log(reducedState)
+}
+
+function draw(){
 
     console.log("drawing")
 
-    for(let i = 0; i < state.length; i++){
-        for(let j = 0; j < state[i].length; j++){
+    for(let i = 0; i < reducedState.length; i++){
 
-            if(state[i][j] != -1){
+        sum = 0;
+
+        for(let j = 0; j < reducedState[i].length; j++){
+
+            
+
+            //update colors if they aren't in the mandelbrot set
+            if(reducedState[i][j].last != -1){
+
                 //update color
-                state[i][j] = (state[i][j] + 1) % colors.length
+                reducedState[i][j].last = (reducedState[i][j].last + 1) % colors.length
 
-                ctx.fillStyle = colors[state[i][j]]
-                ctx.fillRect(i, j, 1, 1)
+                ctx.fillStyle = colors[reducedState[i][j].last]
+                ctx.fillRect(sum, i, reducedState[i][j].len, 1)
+            }else{
+                // sum -= reducedState[i][j].len
             }
             
+            sum += reducedState[i][j].len
         }
     }
 }
 
+//do main calculation
+calc()
+coalesce()
+
+var pause = setInterval(draw, 150);
+var paused = false;
+
+function Pause(){
+
+    if(!paused){
+        clearInterval(pause);
+        paused = true;
+        document.getElementById("pause").innerHTML = "Resume"
+    }else{
+        pause = setInterval(draw, 150);
+        paused = false;
+        document.getElementById("pause").innerHTML = "Pause"
+    }
+}
 
 
