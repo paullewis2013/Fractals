@@ -33,7 +33,20 @@
         <canvas id="canvas"></canvas>
         
         <div id="menu">
-            <button type="button" class="btn btn-light" onClick="Pause()" id="pause">Pause</button>
+            <button type="button" class="btn btn-light" onClick="pause()" id="pause">Pause</button>
+            <button type="button" class="btn btn-danger" onClick="reset()" id="reset">Reset</button>
+
+            <p id="rCoords">Real Set Bounds {</p>
+                <!-- <input type="text" id="rMin">
+                <input type="text" id="rMax"> -->
+
+            <p id="iCoords">Imaginary Set Bounds {</p>
+                <!-- <input type="text" id="iMin">
+                <input type="text" id="iMax"> -->
+
+
+            <p id="iter">Max iteration count: </p>
+            <p id="anim">Animation load: </p>
         </div>
 
         <!-- Scripts loaded here -->

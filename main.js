@@ -13,19 +13,22 @@ canvas.height = Math.floor(window.innerHeight/2 * scale);
 const WIDTH = window.innerHeight/2 * 1.5 * scale
 const HEIGHT = window.innerHeight/2 * scale
 
-const REAL_SET = { start: -2, end: 1 }
-const IMAGINARY_SET = { start: -1.25, end: 1.25 }
+var REAL_SET = { start: -2, end: 1 }
+var IMAGINARY_SET = { start: -1.25, end: 1.25 }
+
 
 //solarized colors
 const colors = [
     "#002b36",
     "#073642",
-    // "586e75",
+
+    // "#586e75",
     // "#657b83",
     // "#839496",
     // "#93a1a1",
     // "#eee8d5",
     // "#fdf6e3",
+
     "#b58900",
     "#cb4b16",
     "#dc322f",
@@ -41,10 +44,13 @@ var state = []
 var finishedPlot = false
 
 function calc() {
+
+    state = [];
+
     for (let i = 0; i < HEIGHT; i++) {
 
         //add new row to pixel array
-        state.push([])
+        state.push([]);
 
         for (let j = 0; j < WIDTH; j++) {
             complex = {
@@ -67,7 +73,7 @@ function calc() {
     console.log(state)
 }
 
-const MAX_ITERATION = 600
+var MAX_ITERATION = 80
 function mandelbrot(c) {
     let z = { x: 0, y: 0 }, n = 0, p, d;
     do {
@@ -86,9 +92,13 @@ function mandelbrot(c) {
 }
 
 var reducedState = []
+var animationLoad = 0;
 
 //loop through state and coalesce adjacent pixels with same value
 function coalesce(){
+
+    reducedState = []
+    animationLoad = 0;
 
     for(let i = 0; i < state.length; i++){
         
@@ -106,6 +116,7 @@ function coalesce(){
             }else{
 
                 reducedState[i].push({last, len})
+                animationLoad++
 
                 len = 1;
                 last = state[i][j]
@@ -113,9 +124,11 @@ function coalesce(){
         }
         //push end of row
         reducedState[i].push({last, len})
-        console.log("pushing end")
+        animationLoad++
+        // console.log("pushing end")
     }
-    console.log(reducedState)
+    // console.log(reducedState)
+    document.getElementById("anim").innerHTML = `Animation Load: ${animationLoad}`
 }
 
 function draw(){
@@ -128,7 +141,8 @@ function draw(){
 
         for(let j = 0; j < reducedState[i].length; j++){
 
-            
+            //this line shouldn't be here but breaks things in fun ways if uncommented and other parameters are adjusted
+            // sum += reducedState[i][j].len
 
             //update colors if they aren't in the mandelbrot set
             if(reducedState[i][j].last != -1){
@@ -138,8 +152,6 @@ function draw(){
 
                 ctx.fillStyle = colors[reducedState[i][j].last]
                 ctx.fillRect(sum, i, reducedState[i][j].len, 1)
-            }else{
-                // sum -= reducedState[i][j].len
             }
             
             sum += reducedState[i][j].len
@@ -147,24 +159,92 @@ function draw(){
     }
 }
 
-//do main calculation
+//do first calculation
 calc()
 coalesce()
+updateBounds()
+document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
 
-var pause = setInterval(draw, 150);
+//for syncing animation to a song
+var bpm = 107;
+var callrate = 500/(bpm/60)
+
+var pauseInt = setInterval(draw, callrate);
 var paused = false;
 
-function Pause(){
+function pause(){
 
     if(!paused){
-        clearInterval(pause);
+        clearInterval(pauseInt);
         paused = true;
         document.getElementById("pause").innerHTML = "Resume"
     }else{
-        pause = setInterval(draw, 150);
+        pauseInt = setInterval(draw, callrate);
         paused = false;
         document.getElementById("pause").innerHTML = "Pause"
     }
 }
 
+function reset(){
 
+    if(!paused){
+        pause();
+    }
+
+    REAL_SET = { start: -2, end: 1 }
+    IMAGINARY_SET = { start: -1.25, end: 1.25 }
+
+    MAX_ITERATION = 80
+    document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
+
+    calc()
+    coalesce()
+
+    pause()
+
+}
+
+
+//zoom in
+function zoom(x,y){
+    
+    if(!paused){
+        pause();
+    }
+
+    let realSize = Math.abs(REAL_SET.start - REAL_SET.end)
+    let imaginarySize = Math.abs(IMAGINARY_SET.start - IMAGINARY_SET.end)
+
+    REAL_SET.start = x - realSize/4
+    REAL_SET.end = x + realSize/4
+    IMAGINARY_SET.start = y - imaginarySize/4
+    IMAGINARY_SET.end = y + imaginarySize/4
+
+    MAX_ITERATION = Math.floor(MAX_ITERATION * 1.2);
+    document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
+    if(MAX_ITERATION > 2000){
+        MAX_ITERATION = 2000;
+    }
+
+    calc()
+    coalesce()
+    updateBounds()
+
+    pause()
+}
+
+function updateBounds(){
+    document.getElementById("rCoords").innerHTML = `Real Set Bounds {\n\t${REAL_SET.start},\n\t${REAL_SET.end}\n}`
+    document.getElementById("iCoords").innerHTML = `Imaginary Set Bounds {\n\t${IMAGINARY_SET.start},\n\t${IMAGINARY_SET.end}\n}`
+}
+
+canvas.addEventListener('click', function(e){
+
+    complex = {
+        x: REAL_SET.start + (e.offsetX / WIDTH) * (REAL_SET.end - REAL_SET.start),
+        y: IMAGINARY_SET.start + (e.offsetY / HEIGHT) * (IMAGINARY_SET.end - IMAGINARY_SET.start)
+    }
+
+    zoom(complex.x, complex.y)
+
+});
