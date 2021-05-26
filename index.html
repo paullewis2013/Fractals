@@ -33,9 +33,44 @@
         <canvas id="canvas"></canvas>
         
         <div id="menu">
+            <h2>Mandelbrot Set</h2>
+
             <button type="button" class="btn btn-light" onClick="pause()" id="pause">Pause</button>
             <button type="button" class="btn btn-danger" onClick="reset()" id="reset">Reset</button>
 
+            <h6>Toggle Colors</h6>
+            <span>
+                <input type="checkbox" class="regular-checkbox" checked id="c0">
+                <input type="checkbox" class="regular-checkbox" checked id="c1">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c2">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c3">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c4">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c5">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c6">
+                <input type="checkbox" class="regular-checkbox" unchecked id="c7">
+            </span>
+            <br>
+            <span>
+                <input type="checkbox" class="regular-checkbox" checked id="c8">
+                <input type="checkbox" class="regular-checkbox" checked id="c9">
+                <input type="checkbox" class="regular-checkbox" checked id="c10">
+                <input type="checkbox" class="regular-checkbox" checked id="c11">
+                <input type="checkbox" class="regular-checkbox" checked id="c12">
+                <input type="checkbox" class="regular-checkbox" checked id="c13">
+                <input type="checkbox" class="regular-checkbox" checked id="c14">
+                <input type="checkbox" class="regular-checkbox" checked id="c15">
+            </span>
+
+            <button type="button" class="btn btn-light" onClick="refreshColors()" id="refresh">Refresh Colors</button>
+            
+            <p>Return to Portfolio(add me)</p>
+            <p>Zoom factor control(add me)</p>
+            <p>BPM control(add me)</p>
+
+        </div>
+
+        <div id="debug">
+        
             <p id="rCoords">Real Set Bounds {</p>
                 <!-- <input type="text" id="rMin">
                 <input type="text" id="rMax"> -->

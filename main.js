@@ -18,10 +18,19 @@ var IMAGINARY_SET = { start: -1.25, end: 1.25 }
 
 
 //solarized colors
-const colors = [
-    "#002b36",
-    "#073642",
+// var colorCount = 10;
+var colors = [];
+var colorsMap = [
+    {show:1, color:"#002b36"},
+    {show:1, color:"#073642"},
 
+    {show:0, color:"#586e75"},
+    {show:0, color:"#657b83"},
+    {show:0, color:"#839496"},
+    {show:0, color:"#93a1a1"},
+    {show:0, color:"#eee8d5"},
+    {show:0, color:"#fdf6e3"},
+    
     // "#586e75",
     // "#657b83",
     // "#839496",
@@ -29,15 +38,35 @@ const colors = [
     // "#eee8d5",
     // "#fdf6e3",
 
-    "#b58900",
-    "#cb4b16",
-    "#dc322f",
-    "#d33682",
-    "#6c71c4",
-    "#268bd2",
-    "#2aa198",
-    "#859900"
+    {show:1, color:"#b58900"},
+    {show:1, color:"#cb4b16"},
+    {show:1, color:"#dc322f"},
+    {show:1, color:"#d33682"},
+    {show:1, color:"#6c71c4"},
+    {show:1, color:"#268bd2"},
+    {show:1, color:"#2aa198"},
+    {show:1, color:"#859900"},
+
+
+    // "#b58900",
+    // "#cb4b16",
+    // "#dc322f",
+    // "#d33682",
+    // "#6c71c4",
+    // "#268bd2",
+    // "#2aa198",
+    // "#859900"
 ]
+function mapColors(){
+    colors = [];
+    for(let i = 0; i < colorsMap.length; i++){
+        if(colorsMap[i].show == 1){
+            colors.push(colorsMap[i].color)
+        }
+    }
+    console.log(colors)
+}
+mapColors()
 
 //holds contents of pixel array
 var state = []
@@ -166,7 +195,7 @@ updateBounds()
 document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
 
 //for syncing animation to a song
-var bpm = 107;
+var bpm = 125;
 var callrate = 500/(bpm/60)
 
 var pauseInt = setInterval(draw, callrate);
@@ -190,6 +219,7 @@ function reset(){
     if(!paused){
         pause();
     }
+    refreshColors()
 
     REAL_SET = { start: -2, end: 1 }
     IMAGINARY_SET = { start: -1.25, end: 1.25 }
@@ -206,7 +236,7 @@ function reset(){
 
 
 //zoom in
-function zoom(x,y){
+function zoom(x,y,factor){
     
     if(!paused){
         pause();
@@ -215,10 +245,10 @@ function zoom(x,y){
     let realSize = Math.abs(REAL_SET.start - REAL_SET.end)
     let imaginarySize = Math.abs(IMAGINARY_SET.start - IMAGINARY_SET.end)
 
-    REAL_SET.start = x - realSize/4
-    REAL_SET.end = x + realSize/4
-    IMAGINARY_SET.start = y - imaginarySize/4
-    IMAGINARY_SET.end = y + imaginarySize/4
+    REAL_SET.start = x - realSize/(factor * factor)
+    REAL_SET.end = x + realSize/(factor * factor)
+    IMAGINARY_SET.start = y - imaginarySize/(factor * factor)
+    IMAGINARY_SET.end = y + imaginarySize/(factor * factor)
 
     MAX_ITERATION = Math.floor(MAX_ITERATION * 1.2);
     document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
@@ -245,6 +275,40 @@ canvas.addEventListener('click', function(e){
         y: IMAGINARY_SET.start + (e.offsetY / HEIGHT) * (IMAGINARY_SET.end - IMAGINARY_SET.start)
     }
 
-    zoom(complex.x, complex.y)
+    zoom(complex.x, complex.y, 5)
 
 });
+
+function styleButtons(){
+    
+    for(let i = 0; i < colorsMap.length; i++){
+        let check = document.getElementById("c" + i);
+        check.style.backgroundColor = colorsMap[i].color
+    }
+}
+styleButtons()
+
+function refreshColors(){
+
+    //update mapping
+    for(let i = 0; i < colorsMap.length; i++){
+        let check = document.getElementById("c" + i);
+        if(check.checked){
+            colorsMap[i].show = 1
+        }else{
+            colorsMap[i].show = 0
+        }
+    }
+
+    // pause();
+    //call function to map Colors
+    mapColors();
+    // pause();
+
+
+    for(let i = 0; i < reducedState.length; i++){
+        for(let j = 0; j < reducedState[i].length; j++){
+            reducedState[i][j].last = reducedState[i][j].last%colors.length;
+        }
+    }
+}

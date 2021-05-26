@@ -7,12 +7,12 @@ body, html{
     padding: 10px;
     background-color: #002b36;
     position: absolute;
-    right: 0;
+    right: 0vw;
     top: 0;
-    height: 100vh;
+    height: 100%;
     width: 20vw;
-    border: 1px solid white;
-    white-space: pre-wrap;
+    /* border: 1px solid #fdf6e3; */
+    /* white-space: pre-wrap; */
     /* display: flex; */
     /* align: center; */
 }
@@ -23,4 +23,44 @@ body, html{
 #rMin, #rMax, #iMin, #iMax{
     width: 75%;
     margin-left: 25%;
+}
+canvas{
+    width: 80vw;
+}
+#debug{
+    padding: 15px;
+    background-color: #fdf6e3;
+}
+.checkbox{
+    height: 2vw;
+    width: 2vw;
+}
+.regular-checkbox {
+	-webkit-appearance: none;
+    height: 2vw;
+    width: 2vw;
+	background-color: #d43030;
+	border: 1px solid #cacece;
+	/* box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05); */
+	padding: 9px;
+	border-radius: 3px;
+	display: inline-block;
+	position: relative;
+}
+.regular-checkbox:active, .regular-checkbox:checked:active {
+	/* box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1); */
+}
+.regular-checkbox:checked {
+	/* background-color: #e9ecee; */
+	border: 1px solid #adb8c0;
+	/* box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1); */
+	/* color: #99a1a7; */
+}
+.regular-checkbox:checked:after {
+	content: '\2714';
+	font-size: 14px;
+	position: absolute;
+	top: 0px;
+	left: 3px;
+	color: #99a1a7;
 }
