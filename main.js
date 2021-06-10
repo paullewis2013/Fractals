@@ -195,11 +195,20 @@ updateBounds()
 document.getElementById("iter").innerHTML = `Max iteration count: ${MAX_ITERATION}`
 
 //for syncing animation to a song
-var bpm = 125;
-var callrate = 500/(bpm/60)
+var bpm = 120;
+var pulsesPerBeat = 1;
+var callrate = (1000/pulsesPerBeat)/(bpm/60)
 
 var pauseInt = setInterval(draw, callrate);
 var paused = false;
+
+function updateBPM(){
+    bpm = document.getElementById("BPM").value
+    pulsesPerBeat = document.getElementById("BPMpulses").value
+    callrate = (1000/pulsesPerBeat)/(bpm/60)
+    pause();
+    pause();
+}
 
 function pause(){
 
@@ -275,7 +284,9 @@ canvas.addEventListener('click', function(e){
         y: IMAGINARY_SET.start + (e.offsetY / HEIGHT) * (IMAGINARY_SET.end - IMAGINARY_SET.start)
     }
 
-    zoom(complex.x, complex.y, 5)
+    let zf = document.getElementById("zoomFactor").value
+    console.log(zf)
+    zoom(complex.x, complex.y, zf)
 
 });
 

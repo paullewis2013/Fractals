@@ -64,3 +64,9 @@ canvas{
 	left: 3px;
 	color: #99a1a7;
 }
+#returnLink{
+    text-align: center;
+    position: absolute;
+    bottom: 1.5ch;
+    left: 2ch;
+}

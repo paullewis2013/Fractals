@@ -63,9 +63,33 @@
 
             <button type="button" class="btn btn-light" onClick="refreshColors()" id="refresh">Refresh Colors</button>
             
-            <p>Return to Portfolio(add me)</p>
-            <p>Zoom factor control(add me)</p>
-            <p>BPM control(add me)</p>
+            <br>
+
+            <label for="zoomFactor">Set Zoom Factor:</label>
+
+            <select name="zoomFactor" id="zoomFactor">
+                <option value="0.5">0.5</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <br>
+
+            <label for="BPM" placeholder="120">BPM:</label>
+            <input type="number" id="BPM" name="BPM" min="1" max="999" onchange="updateBPM()">  
+
+            <br>
+
+            <label for="BPMpulses">Pulses per beat:</label>
+            <select name="BPMpulses" id="BPMpulses" onchange="updateBPM()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="8">8</option>
+            </select>
+
+            <a href="https://paullewis2013.github.io/Portfolio/" id="returnLink">Return to Portfolio</a>
 
         </div>
 
